@@ -1,0 +1,1 @@
+rm -r $PWD/Builds/Win64/Game_BackUpThisFolder_ButDontShipItWithYourGame/

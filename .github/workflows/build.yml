@@ -14,9 +14,15 @@ jobs:
         with:
           lfs: true
 
+      # Build
       - name: Build
         shell: bash
         run: ./BashScripts/build.sh
+
+      # Remove unnecessary folder
+      - name: Remove DontShipIt folder
+        shell: bash
+        run: ./BashScripts/removeDontShipItFolder.sh
 
       # Output
       - uses: actions/upload-artifact@v3
