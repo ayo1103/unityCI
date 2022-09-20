@@ -10,7 +10,7 @@ public class Builder
         var buildPlayerOptions = new BuildPlayerOptions
         {
             scenes = new[] {"Assets/Scenes/SampleScene.unity"},
-            locationPathName = "D:/Workspace/UnityProjects/unityCI/Builds/Win64/Game.exe",
+            locationPathName = "/Builds/Win64/Game.exe",
             target = BuildTarget.StandaloneWindows64,
             options = BuildOptions.None,
         };
