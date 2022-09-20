@@ -14,6 +14,10 @@ jobs:
         with:
           lfs: true
 
+      - name: Build
+        shell: bash
+        run: ./BashScripts/build.sh
+
       # Output
       - uses: actions/upload-artifact@v2
         with:
