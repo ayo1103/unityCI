@@ -1,12 +1,11 @@
-name: Build project
+name: Actions 😎
 
-on: 
-  workflow_dispatch: {}
-  push:
+on: [push, pull_request]
 
 jobs:
-  buildForWindowsBasedPlatforms:
-    runs-on: self-hosted
+  build:
+    name: Build my project ✨
+    runs-on: EC2
     steps:
       # Checkout
       - name: Checkout repository
@@ -14,18 +13,34 @@ jobs:
         with:
           lfs: true
 
-      # Build
-      - name: Build
-        shell: bash
-        run: ./BashScripts/build.sh
+      # Cache
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
 
-      # Remove unnecessary folder
-      - name: Remove DontShipIt folder
-        shell: bash
-        run: ./BashScripts/removeDontShipItFolder.sh
+      # Test
+      - name: Run tests
+        uses: game-ci/unity-test-runner@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build
+      - name: Build project
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: WebGL
 
       # Output
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v2
         with:
           name: Build
-          path: ${{ github.workspace }}/Builds/Win64/
+          path: build
