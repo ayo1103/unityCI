@@ -30,27 +30,39 @@ public class Builder
     [MenuItem("BuildTool/Build")]
     public static void Build()
     {
-        GenerateVersionJson();
-        
-        var buildPlayerOptions = new BuildPlayerOptions
-        {
-            scenes = new[] {"Assets/Scenes/SampleScene.unity"},
-            locationPathName = "Builds/Win64/Game.exe",
-            target = BuildTarget.StandaloneWindows64,
-            options = BuildOptions.None,
-        };
-
+        var buildPlayerOptions = GetBuildPlayerOptions();
         var report = BuildPipeline.BuildPlayer(buildPlayerOptions);
         var summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
         {
             Debug.Log("Build succeeded: " + summary.totalSize + " bytes");
+            GenerateVersionJson();
         }
 
         if (summary.result == BuildResult.Failed)
         {
             Debug.Log("Build failed");
         }
+    }
+
+    private static BuildPlayerOptions GetBuildPlayerOptions()
+    {
+        var buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = new[] {"Assets/Scenes/SampleScene.unity"},
+
+#if UNITY_EDITOR_WIN
+            locationPathName = "Builds/Win64/Game.exe",
+            target = BuildTarget.StandaloneWindows64,
+            
+#elif UNITY_EDITOR_OSX
+            locationPathName = "Builds/macOS/"
+
+#endif
+            options = BuildOptions.None,
+        };
+        
+        return buildPlayerOptions;
     }
 }
